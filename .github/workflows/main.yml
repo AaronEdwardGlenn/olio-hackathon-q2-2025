@@ -10,15 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 📥 Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # 📦 Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      # 📥 Retrieve contribution data (PR info for latest commit)
+      # 🔎 Retrieve contribution data (PR info for latest commit)
       - name: Retrieve contribution data
         id: get_contribution_data
         run: |
@@ -27,7 +29,7 @@ jobs:
             > contribution_data.json
           echo "data=$(cat contribution_data.json | jq -c '.')" >> $GITHUB_OUTPUT
 
-      # 📥 Retrieve all commits
+      # 🔎 Retrieve all commits
       - name: Retrieve all commits
         id: get_all_commits
         run: |
@@ -36,44 +38,50 @@ jobs:
             > all_commits.json
           echo "data=$(cat all_commits.json | jq -c '.')" >> $GITHUB_OUTPUT
 
-      # 🛠️ Store contribution data into environment variables
+      # 🛠️ Set environment variables
       - name: Set environment variables
         run: |
           username=$(echo '${{ steps.get_contribution_data.outputs.data }}' | jq -r '.[0].user.login')
           avatar_url=$(echo '${{ steps.get_contribution_data.outputs.data }}' | jq -r '.[0].user.avatar_url')
+          commit_sha="${{ github.sha }}"
+          message=$(echo '${{ steps.get_contribution_data.outputs.data }}' | jq -r '.[0].title')
           commit_count=$(echo '${{ steps.get_all_commits.outputs.data }}' | jq '. | length')
 
           echo "username=$username" >> $GITHUB_ENV
           echo "avatar_url=$avatar_url" >> $GITHUB_ENV
+          echo "commit_sha=$commit_sha" >> $GITHUB_ENV
+          echo "message=$message" >> $GITHUB_ENV
           echo "commit_count=$commit_count" >> $GITHUB_ENV
 
-      # 📋 Print collected data
+      # 📋 Print collected environment variables
       - name: Print collected data
         run: |
           echo "Collected data:"
           echo "Username: ${{ env.username }}"
           echo "Avatar URL: ${{ env.avatar_url }}"
+          echo "Commit SHA: ${{ env.commit_sha }}"
+          echo "Message: ${{ env.message }}"
           echo "Total Commits: ${{ env.commit_count }}"
 
-      # 📦 Install dependencies and build
-      - name: Install dependencies and build
+      # 📦 Install dependencies
+      - name: Install dependencies
         run: |
           npm install
+
+      # 🔧 Build project
+      - name: Build project
+        run: |
           npm run build
 
-      # 🛡️ Generate Contributor file (✅ fixed bad substitution)
+      # 🛡️ Generate Contributor.ts file
       - name: Generate Contributor file
         run: |
           cat <<EOF > src/Contributor.ts
-      - name: Generate Contributor file
-        run: |
-          cat <<EOF > src/Contributor.ts
-      export const Contributor = {
-        username: '${{ env.username }}',
-        avatar_url: '${{ env.avatar_url }}',
-        commit: '${{ env.commit_sha }}',
-        message: '${{ env.message }}',
-        commit_count: ${{ env.commit_count }}
-      };
-      EOF
-
+export const Contributor = {
+  username: '${{ env.username }}',
+  avatar_url: '${{ env.avatar_url }}',
+  commit: '${{ env.commit_sha }}',
+  message: '${{ env.message }}',
+  commit_count: ${{ env.commit_count }}
+};
+EOF
