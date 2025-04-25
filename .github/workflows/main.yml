@@ -1,74 +1,71 @@
 name: CICD
+
 on:
   push:
     branches: [ main ]
-
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # Get contribution (PR) info for latest commit
-      - uses: octokit/request-action@v2.x
-        name: Retrieve contribution data
-        id: get_contribution_data
-        with:
-          route: GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls
-          owner: AaronEdwardGlenn
-          repo: olio-hackathon-q2-2025
-          commit_sha: ${{ github.sha }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # 🚀 NEW: Retrieve all commits for repo
-      - uses: octokit/request-action@v2.x
-        name: Retrieve all commits
-        id: get_all_commits
-        with:
-          route: GET /repos/{owner}/{repo}/commits
-          owner: AaronEdwardGlenn
-          repo: olio-hackathon-q2-2025
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Generate env variables
-      - name: Store contribution data in env vars
-        run: | 
-          echo "username=${{ fromJson(steps.get_contribution_data.outputs.data)[0].user.login }}" >> $GITHUB_ENV
-          echo "avatar_url=${{ fromJson(steps.get_contribution_data.outputs.data)[0].user.avatar_url }}" >> $GITHUB_ENV
-          echo "commit_sha=${{ github.sha }}" >> $GITHUB_ENV
-          echo "message=${{ fromJson(steps.get_contribution_data.outputs.data)[0].title }}" >> $GITHUB_ENV
-          echo "commit_count=$(echo '${{ steps.get_all_commits.outputs.data }}' | jq '. | length')" >> $GITHUB_ENV
-          # 👆 Count number of commits using jq JSON processor
-
-      # Print collected data 
-      - name: Print collected data 
-        run: | 
-          echo "data collected:
-                username ${{ env.username }}
-                avatar ${{ env.avatar_url }}
-                commit sha ${{ env.commit_sha }}
-                message ${{ env.message }}
-                total commits ${{ env.commit_count }}"
-
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - name: Generate contributor file 
+      # 📥 Retrieve contribution data (PR info for latest commit)
+      - name: Retrieve contribution data
+        id: get_contribution_data
         run: |
-          echo "export const Contributor = {
-              username: '${{ env.username }}',
-              avatar_url: '${{ env.avatar_url }}',
-              commit: '${{ env.commit_sha }}',
-              message: '${{ env.message }}',
-              commit_count: ${env.commit_count}
-          };" > src/Contributor.ts
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/AaronEdwardGlenn/olio-hackathon-q2-2025/commits/${{ github.sha }}/pulls" \
+            > contribution_data.json
+          echo "data=$(cat contribution_data.json | jq -c '.')" >> $GITHUB_OUTPUT
 
-      - name: Build project 🔧
-        run: | 
+      # 📥 Retrieve all commits
+      - name: Retrieve all commits
+        id: get_all_commits
+        run: |
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/AaronEdwardGlenn/olio-hackathon-q2-2025/commits" \
+            > all_commits.json
+          echo "data=$(cat all_commits.json | jq -c '.')" >> $GITHUB_OUTPUT
+
+      # 🛠️ Store contribution data into environment variables
+      - name: Set environment variables
+        run: |
+          username=$(echo '${{ steps.get_contribution_data.outputs.data }}' | jq -r '.[0].user.login')
+          avatar_url=$(echo '${{ steps.get_contribution_data.outputs.data }}' | jq -r '.[0].user.avatar_url')
+          commit_count=$(echo '${{ steps.get_all_commits.outputs.data }}' | jq '. | length')
+
+          echo "username=$username" >> $GITHUB_ENV
+          echo "avatar_url=$avatar_url" >> $GITHUB_ENV
+          echo "commit_count=$commit_count" >> $GITHUB_ENV
+
+      # 📋 Print collected data
+      - name: Print collected data
+        run: |
+          echo "Collected data:"
+          echo "Username: ${{ env.username }}"
+          echo "Avatar URL: ${{ env.avatar_url }}"
+          echo "Total Commits: ${{ env.commit_count }}"
+
+      # 📦 Install dependencies and build
+      - name: Install dependencies and build
+        run: |
           npm install
           npm run build
+
+      # 🛡️ Generate Contributor file
+      - name: Generate Contributor file
+        run: |
+          echo "export const Contributor = {
+            username: '${{ env.username }}',
+            avatar_url: '${{ env.avatar_url }}',
+            commit_count: ${env.commit_count}
+          };" > src/Contributor.ts
