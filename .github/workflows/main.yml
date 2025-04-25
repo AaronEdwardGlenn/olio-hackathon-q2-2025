@@ -3,7 +3,7 @@ name: CICD
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
   build:
@@ -73,13 +73,13 @@ jobs:
         run: |
           npm run build
 
-      # 🛡️ Generate Contributor.ts file
-     - name: Generate Contributor file
-  run: |
-    echo "export const Contributor = {" > src/Contributor.ts
-    echo "  username: '${{ env.username }}'," >> src/Contributor.ts
-    echo "  avatar_url: '${{ env.avatar_url }}'," >> src/Contributor.ts
-    echo "  commit: '${{ env.commit_sha }}'," >> src/Contributor.ts
-    echo "  message: '${{ env.message }}'," >> src/Contributor.ts
-    echo "  commit_count: ${{ env.commit_count }}" >> src/Contributor.ts
-    echo "};" >> src/Contributor.ts
+      # 🛡️ Generate Contributor file (✅ fixed YAML, no bad substitution)
+      - name: Generate Contributor file
+        run: |
+          echo "export const Contributor = {" > src/Contributor.ts
+          echo "  username: '${{ env.username }}'," >> src/Contributor.ts
+          echo "  avatar_url: '${{ env.avatar_url }}'," >> src/Contributor.ts
+          echo "  commit: '${{ env.commit_sha }}'," >> src/Contributor.ts
+          echo "  message: '${{ env.message }}'," >> src/Contributor.ts
+          echo "  commit_count: ${{ env.commit_count }}" >> src/Contributor.ts
+          echo "};" >> src/Contributor.ts
