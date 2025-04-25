@@ -65,15 +65,15 @@ jobs:
       - name: Generate Contributor file
         run: |
           cat <<EOF > src/Contributor.ts
-- name: Generate Contributor file
-  run: |
-    cat <<EOF > src/Contributor.ts
-export const Contributor = {
-  username: '${{ env.username }}',
-  avatar_url: '${{ env.avatar_url }}',
-  commit: '${{ env.commit_sha }}',
-  message: '${{ env.message }}',
-  commit_count: ${{ env.commit_count }}
-};
-EOF
+      - name: Generate Contributor file
+        run: |
+          cat <<EOF > src/Contributor.ts
+      export const Contributor = {
+        username: '${{ env.username }}',
+        avatar_url: '${{ env.avatar_url }}',
+        commit: '${{ env.commit_sha }}',
+        message: '${{ env.message }}',
+        commit_count: ${{ env.commit_count }}
+      };
+      EOF
 
