@@ -7,7 +7,7 @@ export default class AstronautCharacter extends Phaser.Physics.Arcade.Image {
     private speed = 50;
     private jumpSpeed = 700; 
     private isJumping = false;
-    private scale = .35
+    scale = .35
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'moth'); // Use 'moth' directly
