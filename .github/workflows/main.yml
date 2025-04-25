@@ -55,12 +55,13 @@ jobs:
       - name: Generate Contributor file
         run: |
           echo "export const Contributor = {" > src/Contributor.ts
-          echo "  username: '${{ env.username }}'," >> src/Contributor.ts
-          echo "  avatar_url: '${{ env.avatar_url }}'," >> src/Contributor.ts
-          echo "  commit: '${{ env.commit_sha }}'," >> src/Contributor.ts
-          echo "  message: '${{ env.message }}'," >> src/Contributor.ts
-          echo "  commit_count: ${{ env.commit_count }}" >> src/Contributor.ts
+          echo "    username: '${{ env.username }}'," >> src/Contributor.ts
+          echo "    avatar_url: '${{ env.avatar_url }}'," >> src/Contributor.ts
+          echo "    commit: '${{ env.commit_sha }}'," >> src/Contributor.ts
+          echo "    message: '${{ env.message }}'," >> src/Contributor.ts
+          echo "    commit_count: ${{ env.commit_count }}" >> src/Contributor.ts
           echo "};" >> src/Contributor.ts
+
 
       # 📦 Install dependencies
       - name: Install dependencies
