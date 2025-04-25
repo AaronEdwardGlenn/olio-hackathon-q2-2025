@@ -1,12 +1,14 @@
 name: CICD
 
 on:
-  push:
-    branches: [ main ]
-  workflow_dispatch: {}
+  pull_request:
+    types: [closed] # Only trigger when PR is closed
+    branches:
+      - main        # Only when closing PRs into main
 
 jobs:
-  build:
+  build-and-deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +24,7 @@ jobs:
         id: get_contribution_data
         run: |
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/AaronEdwardGlenn/olio-hackathon-q2-2025/commits/${{ github.sha }}/pulls" \
+            "https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/pulls" \
             > contribution_data.json
           echo "data=$(cat contribution_data.json | jq -c '.')" >> $GITHUB_OUTPUT
 
@@ -30,7 +32,7 @@ jobs:
         id: get_all_commits
         run: |
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/AaronEdwardGlenn/olio-hackathon-q2-2025/commits" \
+            "https://api.github.com/repos/${{ github.repository }}/commits" \
             > all_commits.json
           echo "data=$(cat all_commits.json | jq -c '.')" >> $GITHUB_OUTPUT
 
@@ -47,15 +49,6 @@ jobs:
           echo "commit_sha=$commit_sha" >> $GITHUB_ENV
           echo "message=$message" >> $GITHUB_ENV
           echo "commit_count=$commit_count" >> $GITHUB_ENV
-
-      - name: Print collected data
-        run: |
-          echo "Collected data:"
-          echo "Username: ${{ env.username }}"
-          echo "Avatar URL: ${{ env.avatar_url }}"
-          echo "Commit SHA: ${{ env.commit_sha }}"
-          echo "Message: ${{ env.message }}"
-          echo "Total Commits: ${{ env.commit_count }}"
 
       - name: Install dependencies
         run: |
@@ -75,9 +68,18 @@ jobs:
           echo "  commit_count: ${{ env.commit_count }}" >> src/Contributor.ts
           echo "};" >> src/Contributor.ts
 
-      # 🚀 Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build   # or ./dist if that's your output folder
+          publish_dir: ./build   # or ./dist if your project uses dist/
+
+      - name: Comment deployed URL on Pull Request
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          header: deployment-url
+          message: |
+            🚀 Successfully deployed!
+
+            🌍 Live URL: https://aaronedwardglenn.github.io/olio-hackathon-q2-2025/
