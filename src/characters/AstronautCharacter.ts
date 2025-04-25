@@ -6,16 +6,16 @@ export default class AstronautCharacter extends Phaser.Physics.Arcade.Image {
     private speed = 50;
     private jumpSpeed = 800; 
     private isJumping = false;
-    private bodyOffset = { x: -10, y: 30 };
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, 'moth'); // 👈 Use 'moth' directly instead of 'astronaut'
+        super(scene, x, y, 'moth'); // Use 'moth' directly
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.setOrigin(0.5, 0.5); // 👈 Usually better to center origin for sprites like moth
-        this.setScale(0.25);      // 👈 Scale moth size
+        this.setOrigin(0.5, 0.5); 
+        this.setScale(0.25);
+
         this.setCollideWorldBounds(true);
 
         this.setPosition(0, (scene.cameras.main.height - this.height) / 2);
@@ -24,8 +24,17 @@ export default class AstronautCharacter extends Phaser.Physics.Arcade.Image {
         this.setVelocityX(this.speed);
         this.setDepth(1);
 
-        this.setBodySize(this.width + this.bodyOffset.x, this.height - this.bodyOffset.y);
-        this.setOffset(this.bodyOffset.x, this.bodyOffset.y);
+        // ✅ Shrink and center hitbox after scaling
+        const bodyWidth = this.width * 0.4; // make it 40% of visual width
+        const bodyHeight = this.height * 0.4; // make it 40% of visual height
+
+        const offsetX = (this.width - bodyWidth) / 2;
+        const offsetY = (this.height - bodyHeight) / 2;
+
+        this.setBodySize(bodyWidth, bodyHeight);
+        this.setOffset(offsetX, offsetY);
+
+        // ❌ DO NOT overwrite hitbox later! (deleted those lines)
     }
 
     update(time: number, delta: number, controllerKeys: ControllerKeys): void {
@@ -40,7 +49,7 @@ export default class AstronautCharacter extends Phaser.Physics.Arcade.Image {
 
         if (controllerKeys.jump.isDown && !this.isJumping) {
             this.isJumping = true;
-            this.setVelocityY(-this.jumpSpeed);  // No delta for jump
+            this.setVelocityY(-this.jumpSpeed);
         }
 
         if (this.isJumping && controllerKeys.down.isDown) {

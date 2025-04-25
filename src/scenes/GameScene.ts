@@ -48,7 +48,7 @@ export default class GameScene extends Phaser.Scene {
         this.infiniteScrollingSkyHelper = new InfiniteScrollingImageHelper(this, 0, 0, 'sky', 10);
 
         // Create character
-        this.characterSprite = new AstronautCharacter(this, 200, 200);
+        this.characterSprite = new AstronautCharacter(this, 200, 200); // 👈 +200 pixels down
         this.physics.add.collider(this.characterSprite, floorBody, this.characterSprite.onCharacterCollidesWithFloor, undefined, this.characterSprite);
 
         // Create enemy group
@@ -64,8 +64,12 @@ export default class GameScene extends Phaser.Scene {
                 const newEnemy = this.enemyGroup.get(0, 0) as EnemyCharacter;
                 const offset = this.getRandomEnemyPositionOffset(newEnemy);
 
-                newEnemy.setPosition(this.cameras.main.width + offset.x, floorBody.y - floorBody.height - offset.y );
-                newEnemy.setSpeed(this.floorSpeed);
+                const enemyLowerOffset = 1; // or 150, or however much lower you want
+
+                newEnemy.setPosition(
+                  this.cameras.main.width + offset.x,
+                  (floorBody.y - floorBody.height - offset.y) + enemyLowerOffset
+                );                newEnemy.setSpeed(this.floorSpeed);
 
                 this.physics.add.overlap(this.characterSprite, newEnemy.hitbox, this.onCharacterEnemyOverlap, undefined, this);
             },

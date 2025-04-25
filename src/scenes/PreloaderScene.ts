@@ -7,8 +7,8 @@ export default class Preloader extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image('floor', 'assets/floor.png');
-        this.load.image('sky', 'assets/sky.png');
+        this.load.image('floor', 'assets/floor5.png');
+        this.load.image('sky', 'assets/b4.png');
         this.load.image('astronaut', 'assets/astronaut.png');
         this.load.image('enemy', Contributor.avatar_url);
         this.load.image('moth', 'assets/moth.png')

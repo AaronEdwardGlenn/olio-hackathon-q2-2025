@@ -2,24 +2,25 @@ import * as Phaser from 'phaser';
 
 export default class EnemyCharacter extends Phaser.GameObjects.Image {
     private speed = 10;
-    hitbox!: Phaser.GameObjects.Arc;
+    hitbox!: Phaser.Physics.Arcade.Image;
     maskShape!: Phaser.GameObjects.Graphics;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'enemy');
 
-        this.setOrigin(0.5, 0.5); // Center origin
-        this.setScale(0.3);       // Shrink image
-        scene.add.existing(this); // ✅ Add to scene early so width/height are correct
+        // Add enemy to scene and scale
+        this.setOrigin(0.5, 0.5);
+        this.setScale(0.3);
+        scene.add.existing(this);
 
-        // Get actual radius after scaling
-        const radius = (this.displayWidth) / 2;
+        // Get scaled display radius
+        const visibleRadius = this.displayWidth / 2;
 
-        // 🔵 Draw circular mask
+        // Apply circular mask to enemy sprite
         this.maskShape = scene.add.graphics();
         this.maskShape.fillStyle(0xffffff);
         this.maskShape.beginPath();
-        this.maskShape.arc(0, 0, radius, 0, Math.PI * 2);
+        this.maskShape.arc(0, 0, visibleRadius, 0, Math.PI * 2);
         this.maskShape.fill();
         this.maskShape.setPosition(this.x, this.y);
         this.maskShape.setVisible(false);
@@ -27,25 +28,29 @@ export default class EnemyCharacter extends Phaser.GameObjects.Image {
         const mask = this.maskShape.createGeometryMask();
         this.setMask(mask);
 
-        // ⚪ Create circular hitbox
-        this.hitbox = scene.add.circle(this.x, this.y, radius);
-        scene.physics.add.existing(this.hitbox);
-        const body = this.hitbox.body as Phaser.Physics.Arcade.Body;
-        body.setCircle(radius);
-        body.allowGravity = false;
+        // 🛡️ Create invisible hitbox (smaller than visible sprite)
+        const hitboxRadius = visibleRadius * 0.7;
+
+        this.hitbox = scene.physics.add.image(this.x, this.y, '').setVisible(false);
+        this.hitbox.setCircle(
+            hitboxRadius,
+            visibleRadius - hitboxRadius, // offsetX to center the circle
+            visibleRadius - hitboxRadius  // offsetY to center the circle
+        );
+        (this.hitbox.body as Phaser.Physics.Arcade.Body).allowGravity = false;
     }
 
     update(time: number, delta: number): void {
         super.update(time, delta);
 
-        // Move image
+        // Move enemy to the left
         this.x -= this.speed * delta;
 
-        // Move mask and hitbox to match
+        // Keep mask and hitbox in sync
         this.maskShape.setPosition(this.x, this.y);
         this.hitbox.setPosition(this.x, this.y);
 
-        // Destroy when offscreen
+        // Destroy when off-screen
         if (this.x + this.displayWidth / 2 < 0) {
             this.destroy();
             this.hitbox.destroy();
