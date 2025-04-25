@@ -72,7 +72,7 @@ export default class InitialScene extends Phaser.Scene {
             { text: 'Welcome:', label: explorerLabel },
             { text: Contributor.username.toUpperCase().trim(), label: username },
             { text: 'Total Commits:', label: commit_countLabel },
-            { text: Contributor.commit_count, label: commit_count }
+            { text: Contributor.commit_count.toString(), label: commit_count }
         ], 50);
 
         const avatar = this.add.image(200, 550, 'enemy');

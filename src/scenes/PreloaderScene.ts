@@ -17,10 +17,10 @@ export default class Preloader extends Phaser.Scene {
         this.load.image('menu-avatar-mask', 'assets/menu-avatar-mask.png');
 
         // 🌟 Load different moth based on total commits
-        if (parseInt(Contributor.commit_count) > 6) {
+        if (parseInt(Contributor.commit_count.toString()) > 6) {
             this.load.image('moth', 'assets/moth_2.png');
         }
-        else if (parseInt(Contributor.commit_count) > 3) {
+        else if (parseInt(Contributor.commit_count.toString()) > 3) {
             this.load.image('moth', 'assets/moth_1.png');
         }
         else {
