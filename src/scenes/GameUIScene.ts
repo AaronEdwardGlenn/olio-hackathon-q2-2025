@@ -32,7 +32,7 @@ export default class GameUIScene extends Phaser.Scene {
         this.sceneEventManager.events.on('points-updated', this.handleUpdatePointsEvent, this);
         this.sceneEventManager.events.on('game-over', this.handleGameOverEvent, this);
 
-        this.input.keyboard.on('keyup', this.anyKey, this);
+        this.input.keyboard!.on('keyup', this.anyKey, this);
 
     }
 
