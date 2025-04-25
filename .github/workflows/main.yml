@@ -1,10 +1,9 @@
 name: CICD
 
 on:
-  pull_request:
-    types: [closed] # Only trigger when PR is closed
-    branches:
-      - main        # Only when closing PRs into main
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}   # Only when closing PRs into main
 
 jobs:
   build-and-deploy:
