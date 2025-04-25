@@ -75,7 +75,7 @@ export default class GameScene extends Phaser.Scene {
     
                 this.physics.add.overlap(this.characterSprite, newEnemy.hitbox, this.onCharacterEnemyOverlap, undefined, this);
             },
-            delay: 2000,
+            delay: 1000,
             loop: true
         });
     }

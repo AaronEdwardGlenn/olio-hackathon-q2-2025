@@ -51,38 +51,29 @@ export default class InitialScene extends Phaser.Scene {
             ease: 'Power2'
         });
 
-        const startText = this.add.text(16, 0, 'Press enter to start', { fontFamily: fontFamily, fontSize: titleSize, color: fontColor });
-        startText?.setPosition(this.cameras.main.width / 2 - (startText.width / 2), 100);
+        // const startText = this.add.text(16, 0, 'Press enter to start', { fontFamily: fontFamily, fontSize: titleSize, color: fontColor });
+        // startText?.setPosition(this.cameras.main.width / 2 - (startText.width / 2), 100);
 
-        // const explorerLabel = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: smallLabelSize, color: fontColor });
-        // explorerLabel.setPosition(400, 400);
+        const explorerLabel = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: smallLabelSize, color: fontColor });
+        explorerLabel.setPosition(400, 400);
 
-        // const username = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: labelSize, color: fontColor });
-        // username.setPosition(explorerLabel.x, explorerLabel.y + explorerLabel.height);
+        const username = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: labelSize, color: fontColor });
+        username.setPosition(explorerLabel.x, explorerLabel.y + explorerLabel.height);
 
-        // const experimentLabel = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: smallLabelSize, color: fontColor });
-        // experimentLabel.setPosition(username.x, username.y + username.height * 2);
+        const totalCommitsLabel = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: smallLabelSize, color: fontColor });
+        totalCommitsLabel.setPosition(username.x, username.y + username.height * 2);
 
-        // const simplifiedCommit = Contributor.commit.toUpperCase().substr(Contributor.commit.length - 8, Contributor.commit.length);
-        // const experiment = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: labelSize, color: fontColor });
-        // experiment.setPosition(experimentLabel.x, experimentLabel.y + experimentLabel.height);
-
-        // const messageLabel = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: smallLabelSize, color: fontColor });
-        // messageLabel.setPosition(experiment.x, experiment.y + experiment.height * 2);
-
-        // const message = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: labelSize, color: fontColor, wordWrap: { width: 700, useAdvancedWrap: true } });
-        // message.setPosition(messageLabel.x, messageLabel.y + messageLabel.height);
-        // message.setMaxLines(4);
+        const totalCommits = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: labelSize, color: fontColor, wordWrap: { width: 700, useAdvancedWrap: true } });
+        totalCommits.setPosition(totalCommitsLabel.x, totalCommitsLabel.y + totalCommitsLabel.height);
+        totalCommits.setMaxLines(4);
 
 
-        // TypeWriterEffectHelper.startTypewriter(this, [
-        //     { text: 'EXPLORER:', label: explorerLabel },
-        //     { text: Contributor.username.toUpperCase().trim(), label: username },
-        //     { text: 'EXPERIMENT N°:', label: experimentLabel },
-        //     { text: `...${simplifiedCommit}`, label: experiment },
-        //     { text: 'LOG ENTRY:', label: messageLabel },
-        //     { text: Contributor.message, label: message }
-        // ], 50);
+        TypeWriterEffectHelper.startTypewriter(this, [
+            { text: 'Welcome:', label: explorerLabel },
+            { text: Contributor.username.toUpperCase().trim(), label: username },
+            { text: 'Total Commits:', label: totalCommitsLabel },
+            { text: Contributor.totalCommits, label: totalCommits }
+        ], 50);
 
         const avatar = this.add.image(200, 550, 'enemy');
         avatar.setScale(0.45, 0.45);

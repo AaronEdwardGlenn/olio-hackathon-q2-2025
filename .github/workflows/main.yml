@@ -6,39 +6,52 @@ on:
   workflow_dispatch:
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
 
-      # Retrieve contribution data from GitHub API
+      # Get contribution (PR) info for latest commit
       - uses: octokit/request-action@v2.x
         name: Retrieve contribution data
         id: get_contribution_data
         with:
           route: GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls
-          owner: pawap90
-          repo: space-commit
+          owner: AaronEdwardGlenn
+          repo: olio-hackathon-q2-2025
           commit_sha: ${{ github.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Generate env variables to easily access the contribution data
+      # 🚀 NEW: Retrieve all commits for repo
+      - uses: octokit/request-action@v2.x
+        name: Retrieve all commits
+        id: get_all_commits
+        with:
+          route: GET /repos/{owner}/{repo}/commits
+          owner: AaronEdwardGlenn
+          repo: olio-hackathon-q2-2025
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Generate env variables
       - name: Store contribution data in env vars
         run: | 
           echo "username=${{ fromJson(steps.get_contribution_data.outputs.data)[0].user.login }}" >> $GITHUB_ENV
           echo "avatar_url=${{ fromJson(steps.get_contribution_data.outputs.data)[0].user.avatar_url }}" >> $GITHUB_ENV
           echo "commit_sha=${{ github.sha }}" >> $GITHUB_ENV
           echo "message=${{ fromJson(steps.get_contribution_data.outputs.data)[0].title }}" >> $GITHUB_ENV
+          echo "commit_count=$(echo '${{ steps.get_all_commits.outputs.data }}' | jq '. | length')" >> $GITHUB_ENV
+          # 👆 Count number of commits using jq JSON processor
 
-
+      # Print collected data 
       - name: Print collected data 
         run: | 
-          echo "data collected 
+          echo "data collected:
                 username ${{ env.username }}
                 avatar ${{ env.avatar_url }}
                 commit sha ${{ env.commit_sha }}
-                message ${{ env.message }}"
+                message ${{ env.message }}
+                total commits ${{ env.commit_count }}"
 
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -52,29 +65,11 @@ jobs:
               username: '${{ env.username }}',
               avatar_url: '${{ env.avatar_url }}',
               commit: '${{ env.commit_sha }}',
-              message: '${{ env.message }}'
+              message: '${{ env.message }}',
+              commit_count: ${env.commit_count}
           };" > src/Contributor.ts
 
       - name: Build project 🔧
         run: | 
           npm install
           npm run build
-
-      # Deploy latest contribution to GitHub pages
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.5
-        with:
-          branch: gh-pages
-          folder: _build
-          clean: true
-          clean-exclude: archive
-
-      # Store build permanently in archive folder so everyone can check previous contributions by username
-      - name: Send to archive 📁
-        uses: JamesIves/github-pages-deploy-action@4.1.5
-        with:
-          branch: gh-pages 
-          folder: _build
-          clean: true
-          clean-exclude: archive
-          target-folder: archive/${{ env.username }}

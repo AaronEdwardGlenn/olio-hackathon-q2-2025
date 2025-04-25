@@ -11,12 +11,19 @@ export default class Preloader extends Phaser.Scene {
         this.load.image('sky', 'assets/b4.png');
         this.load.image('astronaut', 'assets/astronaut.png');
         this.load.image('enemy', Contributor.avatar_url);
-        this.load.image('moth', 'assets/moth.png')
-
         this.load.image('logo', 'assets/woe_logo_trans.png');
         this.load.image('avatar', 'assets/shark.png');
         this.load.image('avatar-mask', 'assets/avatar-mask.png');
         this.load.image('menu-avatar-mask', 'assets/menu-avatar-mask.png');
+
+        // 🌟 Load different moth based on total commits
+        if (parseInt(Contributor.totalCommits) > 6) {
+            this.load.image('moth', 'assets/moth_2.png');
+        } else if (parseInt(Contributor.totalCommits) > 3) {
+            this.load.image('moth', 'assets/moth_1.png');
+        } else {
+            this.load.image('moth', 'assets/moth.png');
+        }
     }
 
     create(): void {
