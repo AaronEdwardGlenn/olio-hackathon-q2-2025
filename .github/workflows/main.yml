@@ -1,14 +1,12 @@
 name: CICD
 
 on:
-  pull_request:
-    types: [closed] # Only trigger when PR is closed
+  push:
     branches:
-      - main        # Only when closing PRs into main
+      - main      # Only when closing PRs into main
 
 jobs:
   build-and-deploy:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
