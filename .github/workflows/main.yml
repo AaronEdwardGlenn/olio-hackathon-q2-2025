@@ -68,6 +68,5 @@ jobs:
 export const Contributor = {
   username: '${{ env.username }}',
   avatar_url: '${{ env.avatar_url }}',
-  commit_count: ${{ env.commit_count }}
-};
+  commit_count: ${{ env.commit_count }}};
 EOF
