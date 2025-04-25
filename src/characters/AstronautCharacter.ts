@@ -4,7 +4,7 @@ import ControllerKeys from '../utils/ControllerKeys';
 export default class AstronautCharacter extends Phaser.Physics.Arcade.Image {
 
     private speed = 50;
-    private jumpSpeed = 800; 
+    private jumpSpeed = 700; 
     private isJumping = false;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -20,7 +20,8 @@ export default class AstronautCharacter extends Phaser.Physics.Arcade.Image {
 
         this.setPosition(0, (scene.cameras.main.height - this.height) / 2);
         this.setBounce(0, 0.5);
-        this.setMaxVelocity(500, undefined);
+        this.setMaxVelocity(500, 1000); 
+
         this.setVelocityX(this.speed);
         this.setDepth(1);
 

@@ -30,54 +30,56 @@ export default class GameScene extends Phaser.Scene {
 
     create(): void {
         this.scene.run('game-ui');
-
         this.points = 0;
-
         this.controllerKeys = new ControllerKeys(this, 'wasd');
-
-        // Create floor
+    
+        // 🌤️ 1. Create sky first!
+        this.infiniteScrollingSkyHelper = new InfiniteScrollingImageHelper(this, 0, 0, 'sky', 10);
+    
+        // 🧱 2. Create floor
         this.infiniteScrollingFloorHelper = new InfiniteScrollingImageHelper(this, 0, 0, 'floor', this.floorSpeed);
-
-        // Create floor body
-        const floorBody = this.add.rectangle(0, this.cameras.main.height - this.infiniteScrollingFloorHelper.img1.height + 20, this.infiniteScrollingFloorHelper.img1.width - 20, this.infiniteScrollingFloorHelper.img1.height - 20);
+    
+        // 🧱 3. Create floor body
+        const floorBody = this.add.rectangle(
+            0,
+            this.cameras.main.height - this.infiniteScrollingFloorHelper.img1.height + 20,
+            this.infiniteScrollingFloorHelper.img1.width - 20,
+            this.infiniteScrollingFloorHelper.img1.height - 20
+        );
         floorBody.setOrigin(0, 0);
         this.physics.add.existing(floorBody, true);
         (floorBody.body as Phaser.Physics.Arcade.Body).debugBodyColor = 0x018852;
-
-        // Create sky
-        this.infiniteScrollingSkyHelper = new InfiniteScrollingImageHelper(this, 0, 0, 'sky', 10);
-
-        // Create character
-        this.characterSprite = new AstronautCharacter(this, 200, 200); // 👈 +200 pixels down
+    
+        // 🚀 4. Create character
+        this.characterSprite = new AstronautCharacter(this, 200, 200);
         this.physics.add.collider(this.characterSprite, floorBody, this.characterSprite.onCharacterCollidesWithFloor, undefined, this.characterSprite);
-
-        // Create enemy group
+    
+        // 👾 5. Create enemy group
         this.enemyGroup = this.add.group({
             classType: EnemyCharacter,
             runChildUpdate: true
         });
-
-        // Create enemy spawner
+    
+        // 👾 6. Create enemy spawner
         this.time.addEvent({
             callback: () => {
-
                 const newEnemy = this.enemyGroup.get(0, 0) as EnemyCharacter;
                 const offset = this.getRandomEnemyPositionOffset(newEnemy);
-
-                const enemyLowerOffset = 1; // or 150, or however much lower you want
-
+    
+                const enemyLowerOffset = 1;
                 newEnemy.setPosition(
-                  this.cameras.main.width + offset.x,
-                  (floorBody.y - floorBody.height - offset.y) + enemyLowerOffset
-                );                newEnemy.setSpeed(this.floorSpeed);
-
+                    this.cameras.main.width + offset.x,
+                    (floorBody.y - floorBody.height - offset.y) + enemyLowerOffset
+                );
+                newEnemy.setSpeed(this.floorSpeed);
+    
                 this.physics.add.overlap(this.characterSprite, newEnemy.hitbox, this.onCharacterEnemyOverlap, undefined, this);
             },
             delay: 2000,
             loop: true
         });
     }
-
+    
     update(time: number, delta: number): void {
         super.update(time, delta);
 
