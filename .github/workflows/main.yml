@@ -11,14 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 📥 Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # 📦 Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
+      # 🔎 Retrieve contribution data
       - name: Retrieve contribution data
         id: get_contribution_data
         run: |
@@ -27,6 +30,7 @@ jobs:
             > contribution_data.json
           echo "data=$(cat contribution_data.json | jq -c '.')" >> $GITHUB_OUTPUT
 
+      # 🔎 Retrieve all commits
       - name: Retrieve all commits
         id: get_all_commits
         run: |
@@ -35,6 +39,7 @@ jobs:
             > all_commits.json
           echo "data=$(cat all_commits.json | jq -c '.')" >> $GITHUB_OUTPUT
 
+      # 🛠 Set environment variables
       - name: Set environment variables
         run: |
           username=$(echo '${{ steps.get_contribution_data.outputs.data }}' | jq -r '.[0].user.login')
@@ -49,14 +54,7 @@ jobs:
           echo "message=$message" >> $GITHUB_ENV
           echo "commit_count=$commit_count" >> $GITHUB_ENV
 
-      - name: Install dependencies
-        run: |
-          npm install
-
-      - name: Build project
-        run: |
-          npm run build
-
+      # 🛡️ Generate Contributor file BEFORE build
       - name: Generate Contributor file
         run: |
           echo "export const Contributor = {" > src/Contributor.ts
@@ -67,12 +65,24 @@ jobs:
           echo "  commit_count: ${{ env.commit_count }}" >> src/Contributor.ts
           echo "};" >> src/Contributor.ts
 
+      # 📦 Install dependencies
+      - name: Install dependencies
+        run: |
+          npm install
+
+      # 🔧 Build project
+      - name: Build project
+        run: |
+          npm run build
+
+      # 🚀 Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build   # or ./dist if your project uses dist/
+          publish_dir: ./build   # <-- make sure you output to ./build
 
+      # ✏️ Comment live URL back on PR
       - name: Comment deployed URL on Pull Request
         uses: marocchino/sticky-pull-request-comment@v2
         with:

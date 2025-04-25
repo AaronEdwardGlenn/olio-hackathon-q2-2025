@@ -27,7 +27,7 @@ export default class InitialScene extends Phaser.Scene {
         });
 
 
-        this.input.keyboard.on('keyup', this.anyKey, this);
+        this.input?.keyboard?.on('keyup', this.anyKey, this);
     }
 
     private anyKey(event: { keyCode: number }): void {
