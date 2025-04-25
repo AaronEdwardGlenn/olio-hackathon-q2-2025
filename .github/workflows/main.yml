@@ -3,7 +3,6 @@ name: CICD
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: {}   # Only when closing PRs into main
 
 jobs:
   build-and-deploy:
