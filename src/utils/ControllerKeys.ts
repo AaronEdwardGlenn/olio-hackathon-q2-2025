@@ -16,7 +16,7 @@ export default class ControllerKeys {
         else
             this.createDefaultKeys(scene);
 
-        this.jump = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.jump = scene?.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
     get isAnyKeyDown(): boolean {
@@ -25,7 +25,7 @@ export default class ControllerKeys {
     }
 
     private createDefaultKeys(scene: Scene): void {
-        const cursorKeys = scene.input.keyboard.createCursorKeys();
+        const cursorKeys = scene?.input.keyboard!.createCursorKeys();
         this.up = cursorKeys.up;
         this.down = cursorKeys.down;
         this.left = cursorKeys.left;
@@ -33,9 +33,9 @@ export default class ControllerKeys {
     }
     
     private createWasdKeys(scene: Scene): void {
-        this.up = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-        this.down = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        this.left = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        this.right = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        this.up = scene?.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        this.down = scene?.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        this.left = scene?.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.right = scene?.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     }
 }
