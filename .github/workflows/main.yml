@@ -1,10 +1,9 @@
 name: CICD
 
 on:
-  pull_request:
-    types: [closed] # Only trigger when PR is closed
-    branches:
-      - main   
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
 
 jobs:
   build:
@@ -82,12 +81,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build   # or ./dist if that's your output folder
-      - name: Comment deployed URL on Pull Request
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          header: deployment-url
-          message: |
-            🚀 Successfully deployed!
-
-            🌍 Live URL: https://aaronedwardglenn.github.io/olio-hackathon-q2-2025/
