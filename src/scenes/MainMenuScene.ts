@@ -84,7 +84,7 @@ export default class InitialScene extends Phaser.Scene {
         //     { text: Contributor.message, label: message }
         // ], 50);
 
-        const avatar = this.add.image(200, 550, 'avatar');
+        const avatar = this.add.image(200, 550, 'enemy');
         avatar.setScale(0.45, 0.45);
 
         const avatarMask = this.make.image({ x: 0, y: 0, key: 'menu-avatar-mask', add: false });

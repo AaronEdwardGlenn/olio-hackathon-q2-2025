@@ -20,7 +20,7 @@ const config: Phaser.Types.Core.GameConfig = {
         }
     },
     scene: [PreloaderScene, MainMenuScene, GameScene, GameUIScene],
-    backgroundColor: '#222034',
+    backgroundColor: '#010a1a',
     zoom
 };
 

@@ -4,7 +4,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #001f3f;
+  background-color: #001f3f67;
   background-image: url("./assets/background-cool.png"); /* Use a watery or oceanic image here */
   background-size: cover;
   background-position: center;
