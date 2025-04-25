@@ -60,19 +60,19 @@ export default class InitialScene extends Phaser.Scene {
         const username = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: labelSize, color: fontColor });
         username.setPosition(explorerLabel.x, explorerLabel.y + explorerLabel.height);
 
-        const totalCommitsLabel = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: smallLabelSize, color: fontColor });
-        totalCommitsLabel.setPosition(username.x, username.y + username.height * 2);
+        const commit_countLabel = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: smallLabelSize, color: fontColor });
+        commit_countLabel.setPosition(username.x, username.y + username.height * 2);
 
-        const totalCommits = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: labelSize, color: fontColor, wordWrap: { width: 700, useAdvancedWrap: true } });
-        totalCommits.setPosition(totalCommitsLabel.x, totalCommitsLabel.y + totalCommitsLabel.height);
-        totalCommits.setMaxLines(4);
+        const commit_count = this.add.text(16, 0, '', { fontFamily: fontFamily, fontSize: labelSize, color: fontColor, wordWrap: { width: 700, useAdvancedWrap: true } });
+        commit_count.setPosition(commit_countLabel.x, commit_countLabel.y + commit_countLabel.height);
+        commit_count.setMaxLines(4);
 
 
         TypeWriterEffectHelper.startTypewriter(this, [
             { text: 'Welcome:', label: explorerLabel },
             { text: Contributor.username.toUpperCase().trim(), label: username },
-            { text: 'Total Commits:', label: totalCommitsLabel },
-            { text: Contributor.totalCommits, label: totalCommits }
+            { text: 'Total Commits:', label: commit_countLabel },
+            { text: Contributor.commit_count, label: commit_count }
         ], 50);
 
         const avatar = this.add.image(200, 550, 'enemy');

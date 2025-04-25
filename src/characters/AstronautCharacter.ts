@@ -17,7 +17,7 @@ export default class AstronautCharacter extends Phaser.Physics.Arcade.Image {
 
         this.setOrigin(0.5, 0.5); 
         // ✅ Set jumpSpeed based on total commits
-        const scaleidge = parseInt(Contributor.totalCommits.toString());
+        const scaleidge = parseInt(Contributor.commit_count.toString());
         if (scaleidge > 6) {
             this.scale = .2; 
         }
@@ -49,11 +49,11 @@ export default class AstronautCharacter extends Phaser.Physics.Arcade.Image {
         this.setOffset(offsetX, offsetY);
 
         // ✅ Set jumpSpeed based on total commits
-        const totalCommits = parseInt(Contributor.totalCommits.toString(), 10);
-        if (totalCommits > 6) {
+        const commit_count = parseInt(Contributor.commit_count.toString(), 10);
+        if (commit_count > 6) {
             this.jumpSpeed = 800; // 🚀 highest jump
         }
-        else if (totalCommits > 3) {
+        else if (commit_count > 3) {
             this.jumpSpeed = 700; // 🚀 medium jump
         }
         else {
