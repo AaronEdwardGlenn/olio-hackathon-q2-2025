@@ -10,17 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 📥 Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # 📦 Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      # 🔎 Retrieve contribution data (PR info for latest commit)
       - name: Retrieve contribution data
         id: get_contribution_data
         run: |
@@ -29,7 +26,6 @@ jobs:
             > contribution_data.json
           echo "data=$(cat contribution_data.json | jq -c '.')" >> $GITHUB_OUTPUT
 
-      # 🔎 Retrieve all commits
       - name: Retrieve all commits
         id: get_all_commits
         run: |
@@ -38,7 +34,6 @@ jobs:
             > all_commits.json
           echo "data=$(cat all_commits.json | jq -c '.')" >> $GITHUB_OUTPUT
 
-      # 🛠️ Set environment variables
       - name: Set environment variables
         run: |
           username=$(echo '${{ steps.get_contribution_data.outputs.data }}' | jq -r '.[0].user.login')
@@ -53,7 +48,6 @@ jobs:
           echo "message=$message" >> $GITHUB_ENV
           echo "commit_count=$commit_count" >> $GITHUB_ENV
 
-      # 📋 Print collected environment variables
       - name: Print collected data
         run: |
           echo "Collected data:"
@@ -63,17 +57,14 @@ jobs:
           echo "Message: ${{ env.message }}"
           echo "Total Commits: ${{ env.commit_count }}"
 
-      # 📦 Install dependencies
       - name: Install dependencies
         run: |
           npm install
 
-      # 🔧 Build project
       - name: Build project
         run: |
           npm run build
 
-      # 🛡️ Generate Contributor file (✅ fixed YAML, no bad substitution)
       - name: Generate Contributor file
         run: |
           echo "export const Contributor = {" > src/Contributor.ts
@@ -83,3 +74,10 @@ jobs:
           echo "  message: '${{ env.message }}'," >> src/Contributor.ts
           echo "  commit_count: ${{ env.commit_count }}" >> src/Contributor.ts
           echo "};" >> src/Contributor.ts
+
+      # 🚀 Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build   # or ./dist if that's your output folder
