@@ -4,68 +4,112 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgb(34, 32, 51);
-  background-image: url("./assets/background.png");
+  background-color: #001f3f;
+  background-image: url("./assets/background-cool.png"); /* Use a watery or oceanic image here */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: overlay;
+  color: #e0f7fa;
+  overflow: hidden;
 }
 
+/* Shimmering, glowing canvas like sunlight underwater */
 body > canvas {
   border-radius: 25px;
-  border: 4px white solid;
+  border: 3px solid #7fdbff;
+  box-shadow: 0 0 25px rgba(127, 219, 255, 0.5);
+  animation: shimmer 4s infinite ease-in-out alternate;
+}
+
+@keyframes shimmer {
+  0% {
+    box-shadow: 0 0 20px rgba(127, 219, 255, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 35px rgba(0, 255, 255, 0.7);
+  }
 }
 
 .github-url {
   display: flex;
   align-items: center;
-  margin-bottom: 25px;
-  margin-top: 25px;
+  gap: 10px;
+  margin: 30px 0;
+  opacity: 0;
+  animation: bubbleFadeIn 2s forwards ease-in;
 }
 
 .github-url img {
-  margin-right: 10px;
-}
-
-@font-face {
-  font-family: "Alien League";
-  src: url("./AlienLeagueIiGradientBold.otf");
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 0 6px #7fdbff);
 }
 
 .github-url a {
-  font-family: "Alien League";
+  font-size: 24px;
+  color: #b2fefa;
   text-decoration: none;
-  color: white;
-  font-size: 25px;
+  transition: color 0.3s ease;
+}
+
+.github-url a:hover {
+  color: #ffffff;
+  text-shadow: 0 0 10px #00e5ff;
 }
 
 body h1 {
-  font-family: "Alien League", serif;
-  font-size: 50px;
-  margin-bottom: 10px;
-  padding: 12px;
-  background-color: #0d0b21;
-  color: white;
-  border-radius: 10px;
+  font-size: 56px;
+  margin-bottom: 20px;
+  padding: 16px 32px;
+  background-color: rgba(0, 36, 68, 0.8);
+  border: 2px solid #00e5ff;
+  border-radius: 12px;
+  color: #e0f7fa;
+  text-shadow: 0 0 12px #00e5ff;
+  animation: bubbleFadeIn 1.2s forwards ease-in;
+  opacity: 0;
 }
 
 .controls {
   display: flex;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 25px;
+  opacity: 0;
+  animation: bubbleFadeIn 2.4s forwards ease-in;
 }
 
 .controls > .line {
   display: flex;
   align-items: center;
-  font-family: "Alien League", serif;
-  color: white;
-  margin-bottom: 0;
-  margin-right: 30px;
+  font-size: 18px;
+  color: #d0faff;
 }
 
 .controls > .line > .control {
-  border: white thin solid;
-  border-radius: 4px;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  border: 1px solid #00e5ff;
+  border-radius: 6px;
+  padding: 5px 10px;
   margin-left: 10px;
+  background-color: rgba(0, 255, 255, 0.1);
+  backdrop-filter: blur(2px);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.controls > .line > .control:hover {
+  background-color: rgba(0, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+/* Bubbly fade-in effect */
+@keyframes bubbleFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
