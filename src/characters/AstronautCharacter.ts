@@ -16,17 +16,17 @@ export default class AstronautCharacter extends Phaser.Physics.Arcade.Image {
         scene.physics.add.existing(this);
 
         this.setOrigin(0.5, 0.5); 
-          // ✅ Set jumpSpeed based on total commits
-          const scaleidge = parseInt(Contributor.totalCommits.toString());
-          console.log(scaleidge, "COOL")
-          if (scaleidge > 6) {
-              this.scale = .2; 
-          } else if (scaleidge > 3) {
-              this.scale = .35; 
-          } else {
-              this.scale = .4;
-          }
-          console.log(this.scale, "COOL SCALE")
+        // ✅ Set jumpSpeed based on total commits
+        const scaleidge = parseInt(Contributor.totalCommits.toString());
+        if (scaleidge > 6) {
+            this.scale = .2; 
+        }
+        else if (scaleidge > 3) {
+            this.scale = .35; 
+        }
+        else {
+            this.scale = .4;
+        }
         this.setScale(this.scale);
 
         this.setCollideWorldBounds(true);
@@ -48,15 +48,17 @@ export default class AstronautCharacter extends Phaser.Physics.Arcade.Image {
         this.setBodySize(bodyWidth, bodyHeight);
         this.setOffset(offsetX, offsetY);
 
-            // ✅ Set jumpSpeed based on total commits
-            const totalCommits = parseInt(Contributor.totalCommits.toString(), 10);
-            if (totalCommits > 6) {
-                this.jumpSpeed = 800; // 🚀 highest jump
-            } else if (totalCommits > 3) {
-                this.jumpSpeed = 700; // 🚀 medium jump
-            } else {
-                this.jumpSpeed = 500; // 🚀 default smaller jump
-            }
+        // ✅ Set jumpSpeed based on total commits
+        const totalCommits = parseInt(Contributor.totalCommits.toString(), 10);
+        if (totalCommits > 6) {
+            this.jumpSpeed = 800; // 🚀 highest jump
+        }
+        else if (totalCommits > 3) {
+            this.jumpSpeed = 700; // 🚀 medium jump
+        }
+        else {
+            this.jumpSpeed = 500; // 🚀 default smaller jump
+        }
 
         // ❌ DO NOT overwrite hitbox later! (deleted those lines)
     }
