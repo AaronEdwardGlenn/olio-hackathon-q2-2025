@@ -61,11 +61,13 @@ jobs:
           npm install
           npm run build
 
-      # 🛡️ Generate Contributor file
+      # 🛡️ Generate Contributor file (✅ fixed bad substitution)
       - name: Generate Contributor file
         run: |
-          echo "export const Contributor = {
-            username: '${{ env.username }}',
-            avatar_url: '${{ env.avatar_url }}',
-            commit_count: ${env.commit_count}
-          };" > src/Contributor.ts
+          cat <<EOF > src/Contributor.ts
+export const Contributor = {
+  username: '${{ env.username }}',
+  avatar_url: '${{ env.avatar_url }}',
+  commit_count: ${{ env.commit_count }}
+};
+EOF
